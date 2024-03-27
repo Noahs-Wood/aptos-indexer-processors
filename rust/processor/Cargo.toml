@@ -60,6 +60,13 @@ native-tls = { workspace = true }
 postgres-native-tls = { workspace = true }
 tokio-postgres = { workspace = true }
 
+# Parquet support
+parquet = { workspace = true }
+arrow ={ workspace = true }
+num = { workspace = true }
+google-cloud-storage = { workspace = true }
+hyper = { workspace = true }
+
 [features]
 libpq = ["diesel/postgres"]
 # When using the default features we enable the diesel/postgres feature. We configure
