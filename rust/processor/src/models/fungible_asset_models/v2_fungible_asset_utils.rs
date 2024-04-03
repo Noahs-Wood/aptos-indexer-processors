@@ -189,7 +189,7 @@ impl FungibleAssetSupply {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ConcurrentFungibleAssetSupply {
-    pub aggregator: AggregatorU128,
+    pub current: AggregatorU128,
 }
 
 impl ConcurrentFungibleAssetSupply {
@@ -224,7 +224,7 @@ impl ConcurrentFungibleAssetSupply {
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ConcurrentFungibleAssetBalance {
-    pub aggregator: AggregatorU64,
+    pub balance: AggregatorU64,
 }
 
 impl ConcurrentFungibleAssetBalance {
@@ -317,7 +317,7 @@ impl V2FungibleAssetResource {
                 serde_json::from_value(data.clone())
                     .map(|inner| Some(Self::FungibleAssetStore(inner)))
             },
-            x if x == format!("{}::fungible_asset::ConcurrentBalance", COIN_ADDR) => {
+            x if x == format!("{}::fungible_asset::ConcurrentFungibleBalance", COIN_ADDR) => {
                 serde_json::from_value(data.clone())
                     .map(|inner| Some(Self::ConcurrentFungibleAssetBalance(inner)))
             },

@@ -6,7 +6,8 @@
 #![allow(clippy::unused_unit)]
 
 use super::{
-    v2_fungible_asset_activities::EventToCoinType, v2_fungible_asset_utils::FungibleAssetStore,
+    v2_fungible_asset_activities::EventToCoinType,
+    v2_fungible_asset_utils::{ConcurrentFungibleAssetBalance, FungibleAssetStore},
     v2_fungible_metadata::FungibleAssetMetadataModel,
 };
 use crate::{
@@ -94,6 +95,15 @@ impl FungibleAssetBalance {
                 }
                 let is_primary = Self::is_primary(&owner_address, &asset_type, &storage_id);
 
+                let concurrent_balance: Option<BigDecimal> =
+                    ConcurrentFungibleAssetBalance::from_write_resource(
+                        write_resource,
+                        txn_version,
+                    )
+                    .ok()
+                    .and_then(|balance| balance.map(|b| Some(b.balance.value.clone())))
+                    .unwrap_or(None);
+
                 let coin_balance = Self {
                     transaction_version: txn_version,
                     write_set_change_index,
@@ -102,7 +112,9 @@ impl FungibleAssetBalance {
                     asset_type: asset_type.clone(),
                     is_primary,
                     is_frozen: inner.frozen,
-                    amount: inner.balance.clone(),
+                    amount: concurrent_balance
+                        .clone()
+                        .unwrap_or_else(|| inner.balance.clone()),
                     transaction_timestamp: txn_timestamp,
                     token_standard: TokenStandard::V2.to_string(),
                 };
@@ -112,7 +124,7 @@ impl FungibleAssetBalance {
                     asset_type: asset_type.clone(),
                     is_primary,
                     is_frozen: inner.frozen,
-                    amount: inner.balance.clone(),
+                    amount: concurrent_balance.unwrap_or_else(|| inner.balance.clone()),
                     last_transaction_version: txn_version,
                     last_transaction_timestamp: txn_timestamp,
                     token_standard: TokenStandard::V2.to_string(),
