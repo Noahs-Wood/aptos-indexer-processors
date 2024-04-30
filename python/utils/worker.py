@@ -494,8 +494,8 @@ class IndexerProcessorServer:
             case ProcessorName.NFT_MARKETPLACE_V2_PROCESSOR.value:
                 assert isinstance(processor_config, NFTMarketplaceV2Config)
                 self.processor = NFTMarketplaceV2Processor(processor_config)
-            case ProcessorName.COIN_FLIP.value:
-                self.processor = CoinFlipProcessor()
+            case ProcessorName.NFT_LOTTERY.value:
+                self.processor = NFTLotteryProcessor()
             case ProcessorName.EXAMPLE_AMBASSADOR_TOKEN_PROCESSOR.value:
                 self.processor = AptosAmbassadorTokenProcessor()
             case _:
